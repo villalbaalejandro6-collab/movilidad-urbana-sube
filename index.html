@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Movilidad Urbana — Corrientes Capital</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#172033;font-family:Arial,sans-serif}
+header{background:linear-gradient(120deg,#09243f,#12608a);color:#fff;padding:24px 5%}
+.head{max-width:1450px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.title{font-size:25px;font-weight:800}.sub{font-size:13px;opacity:.82;margin-top:5px}
+.wrap{max-width:1450px;margin:auto;padding:22px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:15px;box-shadow:0 8px 25px #0f172a0b}
+.kpi{padding:17px}.label{font-size:11px;color:#64748b;text-transform:uppercase;font-weight:bold}.value{font-size:28px;font-weight:800;margin-top:7px}
+.toolbar{padding:14px;margin:17px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input,select,button{font:inherit;padding:10px 12px;border:1px solid #dbe3ee;border-radius:9px;background:#fff}
+button{background:#2563eb;color:#fff;border:0;font-weight:bold;cursor:pointer}
+.grid{display:grid;grid-template-columns:1.3fr .7fr;gap:17px}.panel{padding:17px}h2{font-size:16px;margin:0 0 12px}
+#map{height:610px;border-radius:11px;overflow:hidden}
+.list{max-height:600px;overflow:auto}.barrio{padding:9px 10px;border-bottom:1px solid #eef2f7;font-size:12px;cursor:pointer}.barrio:hover{background:#eff6ff}
+.note{font-size:12px;line-height:1.6;background:#eff6ff;border-left:4px solid #2563eb;padding:14px;border-radius:9px;margin-top:15px}
+.links a{display:block;color:#2563eb;margin:9px 0;text-decoration:none;font-size:12px}
+@media(max-width:950px){.grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.wrap{padding:11px}.kpis{grid-template-columns:1fr 1fr}#map{height:470px}}
+</style>
+</head>
+<body>
+<header><div class="head"><div><div class="title">Movilidad Urbana — Corrientes Capital</div>
+<div class="sub">Barrios + transporte público + puntos de recarga SUBE</div></div><b>GIS · CORRIENTES</b></div></header>
+<main class="wrap">
+<div class="kpis">
+<div class="card kpi"><div class="label">Barrios registrados</div><div class="value">125</div></div>
+<div class="card kpi"><div class="label">Ciudad</div><div class="value">Corrientes</div></div>
+<div class="card kpi"><div class="label">Análisis</div><div class="value">GIS</div></div>
+<div class="card kpi"><div class="label">Estado</div><div class="value">Base</div></div>
+</div>
+<div class="card toolbar"><b>Buscar barrio:</b><input id="q" placeholder="Ej.: Laguna Seca, 17 de Agosto, San Gerónimo…" style="min-width:280px">
+<select id="barrio"><option value="">Seleccionar barrio</option></select><button id="reset">Restablecer</button></div>
+<div class="grid">
+<div class="card panel"><h2>Mapa de Corrientes Capital</h2><div id="map"></div>
+<div class="note"><b>Importante:</b> esta versión utiliza el listado territorial de barrios publicado por la Municipalidad de Corrientes. No se inventan límites, recorridos ni puntos SUBE. Para calcular accesibilidad real hay que incorporar las bases geográficas de recorridos, paradas y puntos SUBE de Corrientes.</div></div>
+<div class="card panel"><h2>Barrios de Corrientes Capital</h2><div id="list" class="list"></div>
+<h2 style="margin-top:18px">Fuentes oficiales</h2><div class="links">
+<a target="_blank" href="https://datos.ciudaddecorrientes.gov.ar/dataset/barrios">Portal de Datos Abiertos — Barrios</a>
+<a target="_blank" href="https://gisdesa.ciudaddecorrientes.gov.ar/idemcc/">IDEMCC — Visor geográfico municipal</a>
+<a target="_blank" href="https://gisdesa.ciudaddecorrientes.gov.ar/gis/planificacion_urbana/">Visor de Planificación Urbana</a>
+</div></div>
+</div>
+</main>
+<script>
+const barrios=["17 de Agosto", "3 de Abril", "9 de Julio", "25 de Mayo", "215 Viviendas", "1000 Viviendas", "Aldana", "Alta Gracia", "Anahí", "Antártida Argentina", "Apipé", "Arazatí", "Ayuda Mutua", "Bancario", "Bañado Norte", "Barrio Nuevo", "Belgrano", "Berón de Astrada", "Cacique Canindeyú (Las Tejas)", "Camba Cuá", "Canal 13", "Catamarca", "Centro", "Cíchero", "Ciudad de Arequipa", "Ciudad de Estepa", "Ciudades Correntinas", "Co.De.Pro", "Collantes (Barrio Jardín)", "Colombia Granaderos", "Concepción", "Cremonte", "Cristóbal Colón", "Deportes", "Docente", "Dr. Luis Federico Leloir", "Dr. Montaña", "Dr. Nicolini", "Esperanza", "Ferré", "Flier", "Fray José de la Quintana", "Galván", "Gral. Güemes", "Gral. San Martín", "Hipódromo", "Independencia", "Industrial", "Irupé", "Islas Malvinas", "Itatí", "Jardín", "José María Ponce", "Juan de Vera", "Juan XXIII", "La Cruz", "La Olla", "La Rozada", "Laguna Soto", "Laguna Brava", "Laguna Seca", "Las Rosas", "Las Tejas", "Libertad", "Loma Linda", "Loma Alta", "Lomas", "Lomas del Mirador", "Luz y Fuerza", "Madariaga", "Molina Punta", "Néstor Kirchner", "Ntra. Sra. de Asunción", "Ntra. Sra. de Guadalupe", "Ntra. Sra. de Pompeya", "Ongay", "Paloma de la Paz", "Parque Cadenas", "Parque Ing. Serantes", "Pío X", "Piragine Niveyro", "Pirayuí", "Plácido Martínez", "Popular", "Primera Junta", "Progreso", "Pueblito Buenos Aires", "Pujol", "Quinta Ferré", "República de Venezuela", "Residencial Santa Rosa", "Río Paraná", "San Antonio", "San Benito", "San Gerónimo", "San Ignacio", "San Jorge", "San José", "San Marcelo", "San Marcos", "San Martín", "San Roque", "Santa Fe", "Santa María", "Santa Rita", "Santa Rosa", "Santa Teresita", "Sapucay", "Sargento Cabral", "Sector Golf (Laguna Soto)", "Serantes", "Sur", "Tambor de Tacuarí", "Unión", "Universitario", "UNNE - Campus Universitario", "UNNE - Eragia", "Víctor Colas", "Villa Celia", "Villa Chiquita", "Villa García", "Villa Patono", "Villa Raquel", "Virgen de los Dolores", "Yapeyú"];
+const sel=document.getElementById('barrio'),q=document.getElementById('q'),list=document.getElementById('list');
+barrios.forEach(b=>sel.innerHTML+=`<option>${b}</option>`);
+const map=L.map('map').setView([-27.4692,-58.8306],12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
+let marker=null;
+function show(name){if(marker)map.removeLayer(marker);marker=L.marker([-27.4692,-58.8306]).addTo(map).bindPopup('<b>'+name+'</b><br>Corrientes Capital').openPopup();}
+function render(){const x=q.value.toLowerCase();list.innerHTML=barrios.filter(b=>b.toLowerCase().includes(x)).map(b=>`<div class="barrio" onclick="show('${b.replaceAll("'","\\'")}')">${b}</div>`).join('')}
+render();q.oninput=render;sel.onchange=()=>{if(sel.value){q.value=sel.value;render();show(sel.value)}};reset.onclick=()=>{q.value='';sel.value='';render();if(marker){map.removeLayer(marker);marker=null}};
+</script>
+</body></html>
