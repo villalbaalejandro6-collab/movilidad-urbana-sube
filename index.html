@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Movilidad Urbana — Corrientes Capital</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#162033;font-family:Arial,sans-serif}
+header{background:linear-gradient(120deg,#09243f,#12608a);color:#fff;padding:23px 4%}
+.head{max-width:1500px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:15px}
+h1{margin:0;font-size:25px}.sub{font-size:13px;opacity:.82;margin-top:5px}
+.wrap{max-width:1500px;margin:auto;padding:20px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:15px;box-shadow:0 7px 25px #0f172a0b}
+.kpi{padding:16px}.label{font-size:11px;color:#64748b;text-transform:uppercase;font-weight:bold}.value{font-size:27px;font-weight:800;margin-top:7px}
+.layout{display:grid;grid-template-columns:1fr 340px;gap:16px}.mapbox{padding:12px}iframe{width:100%;height:700px;border:0;border-radius:10px}
+.side{padding:16px}.search{width:100%;padding:10px;border:1px solid #dbe3ee;border-radius:9px;margin-bottom:10px}
+.list{height:610px;overflow:auto}.item{padding:9px;border-bottom:1px solid #eef2f7;font-size:12px}.item b{color:#2563eb}
+.note{margin-top:15px;padding:13px;background:#eff6ff;border-left:4px solid #2563eb;border-radius:8px;font-size:12px;line-height:1.55}
+.links{margin-top:15px;font-size:12px}a{color:#2563eb;text-decoration:none}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}iframe{height:600px}}
+@media(max-width:600px){.wrap{padding:10px}iframe{height:520px}}
+</style>
+</head>
+<body>
+<header><div class="head"><div><h1>Movilidad Urbana — Corrientes Capital</h1>
+<div class="sub">Recorridos de colectivos, ramales, barrios y accesibilidad al transporte público</div></div><b>GIS MUNICIPAL</b></div></header>
+<main class="wrap">
+<div class="kpis">
+<div class="card kpi"><div class="label">Ciudad</div><div class="value">Corrientes Capital</div></div>
+<div class="card kpi"><div class="label">Ramales destacados</div><div class="value">29</div></div>
+<div class="card kpi"><div class="label">Tema</div><div class="value">Movilidad</div></div>
+<div class="card kpi"><div class="label">Fuente</div><div class="value">IDEMCC</div></div>
+</div>
+<div class="layout">
+<div class="card mapbox"><h2 style="margin:8px 8px 12px">Mapa oficial de recorridos</h2>
+<iframe src="https://gis.ciudaddecorrientes.gov.ar/gis/transporte_urbano/" title="Mapa oficial de transporte urbano de Corrientes"></iframe>
+</div>
+<div class="card side"><h2 style="font-size:16px">Líneas y ramales</h2>
+<input id="q" class="search" placeholder="Buscar línea o ramal…"><div id="list" class="list"></div>
+<div class="note"><b>Cómo usar el mapa:</b><br>
+En el visor oficial podés activar <b>Recorrido Total de Colectivos</b>, <b>Paradas de colectivo Urbano</b>, <b>Puntos de recarga SUBE</b> y cada <b>Recorrido por ramal</b>.
+<br><br>Esto permite analizar la relación entre recorridos, barrios y puntos SUBE sin inventar geometrías.
+</div>
+<div class="links"><a target="_blank" href="https://datos.ciudaddecorrientes.gov.ar/dataset/servicio-de-transporte-urbano">Dataset oficial de recorridos</a><br><br>
+<a target="_blank" href="https://gis.ciudaddecorrientes.gov.ar/idemcc/">IDEMCC — visor municipal</a></div>
+</div></div>
+</main>
+<script>
+const data=["Ramal 101 B", "Línea 101 C", "Línea 102 A", "Línea 102 B", "Línea 102 C", "Línea 103 A", "Línea 103 B", "Línea 103 C - Directo", "Línea 103 C - Bo Esperanza ↔ Bo Dr. Montaña", "Línea 103 D", "Línea 104 A", "Línea 104 B", "Línea 104 C", "Línea 104 D", "Línea 105 A", "Línea 105 B", "Línea 105 C 250 Viv.", "Línea 105 C Perichón", "Línea 106 A", "Línea 106 B", "Línea 106 C", "Línea 106 D", "Línea 108 AB", "Línea 108 C", "Línea 109 A - Lag. Soto", "Línea 109 B - Yecoha", "Línea 110 A", "Línea 110 B", "Línea 110 C Sta. Catalina"];
+const q=document.getElementById('q'),list=document.getElementById('list');
+function render(){const s=q.value.toLowerCase();list.innerHTML=data.filter(x=>x.toLowerCase().includes(s)).map(x=>`<div class="item"><b>${x.split(' ')[0]}</b> ${x.substring(x.indexOf(' ')+1)}</div>`).join('')}
+render();q.oninput=render;
+</script>
+</body></html>
